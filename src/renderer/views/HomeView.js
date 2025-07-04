@@ -459,11 +459,13 @@ export const HomeView = {
 					showToastSuccess("Log saved successfully!");
 					clearForm();
 				} else {
-					alert("Error saving data: " + result.error);
+					showToastError("Error saving data: " + result.error);
 				}
 			} catch (error) {
 				console.error("Error saving to Excel:", error);
-				alert("Error saving data. Please try again.");
+				showToastError(
+					"Error saving data. Please try again. " + error.message
+				);
 			}
 		}
 
