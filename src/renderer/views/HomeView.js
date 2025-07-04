@@ -309,7 +309,7 @@ export const HomeView = {
                 }
             }
 
-            @media screen and (max-height: 1080px) {
+            @media screen and (max-height: 995px) {
                 .container {
                    	height: 100%;
                     overflow-y: auto;
