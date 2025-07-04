@@ -8,9 +8,7 @@ const routes = {
 window.router = new Router(routes);
 
 document.addEventListener("DOMContentLoaded", () => {
-	window.router.render();
+	const app = document.getElementById("app");
+	app.innerHTML = HomeView.render();
+	HomeView.mount(); 
 });
-
-const app = document.getElementById("app");
-app.innerHTML = HomeView.render();
-HomeView.mount();

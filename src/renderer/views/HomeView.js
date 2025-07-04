@@ -27,6 +27,7 @@ export const HomeView = {
                 --item-shadow-2: #dcfce7;
                 --bg-color: #f9fafb;
                 --sub-text: #6b7280; 
+                --error: #dc2626;
             }
 
             .container {
@@ -158,6 +159,109 @@ export const HomeView = {
             .date-time p {
                 color: var(--sub-text);
             }
+
+            form {
+                background: #f9fafb;
+                padding: 32px 24px;
+                border-radius: 16px;
+                box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                width: 100%;
+            }
+
+            .same-row {
+                display: flex;
+                align-items: center;
+                flex-direction: row;
+                width: 100%;
+                gap: 20px;
+            }
+
+            .cta {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .form-group label {
+                font-weight: 500;
+                color: var(--primary-dark);
+                margin-bottom: 2px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 10px 14px;
+                border: 1.5px solid #e0e2e5;
+                border-radius: 8px;
+                font-size: 16px;
+                background: #fff;
+                color: #222;
+                transition: border-color 0.2s;
+                outline: none;
+            }
+
+            .form-group input:focus,
+            .form-group select:focus,
+            .form-group textarea:focus {
+                border-color: var(--primary);
+            }
+
+            .form-group textarea {
+                resize: none;
+                min-height: 80px;
+                font-family: inherit;
+            }
+
+            button#submit-btn {
+                margin-top: 10px;
+                padding: 12px 0;
+                background: var(--primary);
+                color: #fff;
+                font-size: 18px;
+                font-weight: 600;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background 0.2s;
+                box-shadow: 0 2px 8px rgba(5,148,103,0.08);
+            }
+
+            button#submit-btn:hover {
+                background: var(--primary-dark);
+            }
+
+            #toastSuccess, #toastError {
+                display: none;
+                position: fixed;
+                top: 40px;
+                right: 40px;
+                z-index: 9999;
+                min-width: 200px;
+                padding: 16px 24px;
+                color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+                font-size: 18px;
+                transition: opacity 0.3s;
+            }
+
+            #toastSuccess {
+                background: var(--primary);
+            }   
+
+            #toastError {
+                background: var(--error);
+            }
             </style>
             <div class="container">
                 <div class="left-panel">
@@ -221,9 +325,54 @@ export const HomeView = {
                             <p><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" data-lov-id="src/components/AttendanceForm.tsx:85:12" data-lov-name="MapPin" data-component-path="src/components/AttendanceForm.tsx" data-component-line="85" data-component-file="AttendanceForm.tsx" data-component-name="MapPin" data-component-content="%7B%7D"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg> <span>55 Murphy St, Olongapo City, Zambales</span></p>
                         </div>
                     </div>
-                </div>
 
-                
+                    <form>
+                        <div class="form-group">
+                            <label>Fullname <span>*</span></label>
+                            <input type="text" id="fullname" required placeholder="Enter your fullname"/>
+                        </div>
+                        <div class="form-group same-row">
+                            <div class="cta">
+                                <label>Gender <span>*</span></label>
+                                <select id="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="cta">
+                                <label>Age <span>*</span></label>
+                                <input type="number" id="age" required placeholder="Enter your age"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>School/Office <span>*</span></label>
+                            <input type="text" id="school-office" required placeholder="Enter your school/office"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Address <span>*</span></label>
+                            <input type="text" id="address" required placeholder="Enter your address"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            <input type="text" id="contact-number" maxlength="11" inputmode="numeric" placeholder="Phone number">
+                        </div>
+                        <div class="form-group">
+                            <label>Purpose of Visit <span>*</span></label>
+                            <textarea id="purpose" rows="4" required placeholder="Enter the purpose of your visit"></textarea>
+                        </div>
+
+                        <button type="submit" id="submit-btn">Submit</button>
+                    </form>
+
+                    <div id="toastSuccess">
+                        Log successfully!
+                    </div>
+                    <div id="toastError">
+                        Error occurred!
+                    </div>
+                </div>
             </div>
         `;
 	},
@@ -247,11 +396,143 @@ export const HomeView = {
 
 		function updateLocation() {
 			const location = "Olongapo City, Zambales";
-			document.getElementById("current-location").textContent = location;
+			const locEl = document.getElementById("current-location");
+			if (locEl) locEl.textContent = location;
+		}
+
+		function validateForm() {
+			const fullname = document.getElementById("fullname").value.trim();
+			const gender = document.getElementById("gender").value;
+			const age = document.getElementById("age").value;
+			const schoolOffice = document
+				.getElementById("school-office")
+				.value.trim();
+			const address = document.getElementById("address").value.trim();
+			const purpose = document.getElementById("purpose").value.trim();
+
+			// Validation rules
+			if (!fullname) {
+				showToastError("Please enter your fullname");
+				return false;
+			}
+			if (!gender) {
+				showToastError("Please select your gender");
+				return false;
+			}
+			if (!age || age < 1 || age > 120) {
+				showToastError("Please enter a valid age (1-120)");
+				return false;
+			}
+			if (!schoolOffice) {
+				showToastError("Please enter your school/office");
+				return false;
+			}
+			if (!address) {
+				showToastError("Please enter your address");
+				return false;
+			}
+
+			if (!purpose) {
+				showToastError("Please enter the purpose of your visit");
+				return false;
+			}
+
+			return true;
+		}
+
+		const input = document.getElementById("contact-number");
+
+		if (input) {
+			input.addEventListener("input", () => {
+				input.value = input.value.replace(/\D/g, "");
+
+				if (input.value.length > 11) {
+					input.value = input.value.slice(0, 11);
+				}
+			});
+		}
+
+		async function saveToExcel(formData) {
+			try {
+				const result = await window.electronAPI.saveToExcel(formData);
+				if (result.success) {
+					showToastSuccess("Log saved successfully!");
+					clearForm();
+				} else {
+					alert("Error saving data: " + result.error);
+				}
+			} catch (error) {
+				console.error("Error saving to Excel:", error);
+				alert("Error saving data. Please try again.");
+			}
+		}
+
+		function showToastSuccess(message) {
+			const toast = document.getElementById("toastSuccess");
+			toast.textContent = message;
+			toast.style.display = "block";
+			toast.style.opacity = "1";
+			setTimeout(() => {
+				toast.style.opacity = "0";
+				setTimeout(() => {
+					toast.style.display = "none";
+				}, 300);
+			}, 2000);
+		}
+
+		function showToastError(message) {
+			const toast = document.getElementById("toastError");
+			toast.textContent = message;
+			toast.style.display = "block";
+			toast.style.opacity = "1";
+			setTimeout(() => {
+				toast.style.opacity = "0";
+				setTimeout(() => {
+					toast.style.display = "none";
+				}, 300);
+			}, 2000);
+		}
+
+		function clearForm() {
+			document.getElementById("fullname").value = "";
+			document.getElementById("gender").value = "";
+			document.getElementById("age").value = "";
+			document.getElementById("school-office").value = "";
+			document.getElementById("address").value = "";
+			document.getElementById("contact-number").value = "";
+			document.getElementById("purpose").value = "";
 		}
 
 		setInterval(updateClock, 1000);
 		updateClock();
 		updateLocation();
+
+		const form = document.querySelector("form");
+		if (form) {
+			form.addEventListener("submit", async function (e) {
+				e.preventDefault();
+
+				if (!validateForm()) {
+					return;
+				}
+
+				const formData = {
+					timestamp: new Date().toLocaleString(),
+					fullname: document.getElementById("fullname").value.trim(),
+					gender: document.getElementById("gender").value,
+					age: parseInt(document.getElementById("age").value),
+					schoolOffice: document
+						.getElementById("school-office")
+						.value.trim(),
+					address: document.getElementById("address").value.trim(),
+					contactNumber: document
+						.getElementById("contact-number")
+						.value.trim(),
+					purpose: document.getElementById("purpose").value.trim(),
+				};
+
+				await saveToExcel(formData);
+			});
+		}
 	},
 };
