@@ -1,5 +1,4 @@
 import { app, BrowserWindow } from "electron";
-import path from "path";
 
 function createWindow() {
 	const mainWindow = new BrowserWindow({
@@ -12,7 +11,7 @@ function createWindow() {
 		},
 	});
 
-	mainWindow.loadFile("index.html");
+	mainWindow.loadFile("public/index.html");
 
 	if (process.env.NODE_ENV === "development") {
 		mainWindow.webContents.openDevTools();
