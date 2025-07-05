@@ -298,7 +298,7 @@ export const HomeView = {
                         </ul>
                     </div>
                     <div class="footer">
-                        <p>&copy; 2023 Olongapo City Public Library. All rights reserved.</p>
+                        <p>&copy; 2025 Olongapo City Public Library. All rights reserved.</p>
                     </div>
                 </div>
                 <div class="right-panel">

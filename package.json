@@ -4,8 +4,11 @@
 	"version": "1.0.0",
 	"main": "index.js",
 	"build": {
+		"win": {
+			"icon": "public/assets/icon.ico"
+		},
 		"appId": "com.ocpl.logging",
-		"productName": "OCPL Logging",
+		"productName": "Olongapo City Public Library Logging System",
 		"files": [
 			"**/*"
 		],
@@ -22,8 +25,7 @@
 	"description": "",
 	"devDependencies": {
 		"electron": "^37.2.0",
-		"electron-builder": "^26.0.12",
-		"electron-reload": "^2.0.0-alpha.1"
+		"electron-builder": "^26.0.12"
 	},
 	"dependencies": {
 		"xlsx": "^0.18.5"
