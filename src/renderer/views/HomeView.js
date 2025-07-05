@@ -36,7 +36,6 @@ export const HomeView = {
                 display: flex;
                 flex-direction: row;
                 width: 100%;
-                padding: 40px 60px;
                 background-color: var(--bg);
             }
 
@@ -49,7 +48,6 @@ export const HomeView = {
                 height: 100%;
                 color: var(--main-text);
                 padding: 40px;
-                border-radius: 20px 0 0 20px;
             }
 
             .logo {
@@ -116,7 +114,6 @@ export const HomeView = {
                 height: 100%;
                 color: var(--main-text);
                 padding: 70px 40px;
-                border-radius: 0 20px 20px 0;
                 color: var(--black);
             }
 
@@ -218,7 +215,7 @@ export const HomeView = {
 
             .form-group textarea {
                 resize: none;
-                min-height: 80px;
+                flex: 1;
                 font-family: inherit;
             }
 
@@ -311,8 +308,13 @@ export const HomeView = {
 
             @media screen and (max-height: 995px) {
                 .container {
-                   	height: 100%;
+                    height: 100%;
                     overflow-y: auto;
+                }
+
+                .r-same-row {
+                    display: flex;
+                    flex-direction: row;
                 }
 
                 .right-panel, .left-panel {
@@ -408,13 +410,15 @@ export const HomeView = {
                             <label>School/Office <span>*</span></label>
                             <input type="text" id="school-office" required placeholder="Enter your school/office"/>
                         </div>
-                        <div class="form-group">
-                            <label>Address <span>*</span></label>
-                            <input type="text" id="address" required placeholder="Enter your address"/>
-                        </div>
-                        <div class="form-group">
-                            <label>Contact Number</label>
-                            <input type="text" id="contact-number" maxlength="11" inputmode="numeric" placeholder="Phone number">
+                        <div class="form-group r-same-row">
+                            <div class="cta">
+                                <label>Address <span>*</span></label>
+                                <input type="text" id="address" required placeholder="Enter your address"/>
+                            </div>
+                            <div class="cta">
+                                <label>Contact Number</label>
+                                <input type="text" id="contact-number" maxlength="11" inputmode="numeric" placeholder="Phone number">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Purpose of Visit <span>*</span></label>
