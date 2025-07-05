@@ -115,7 +115,7 @@ export const HomeView = {
                 width: 100%;
                 height: 100%;
                 color: var(--main-text);
-                padding: 40px;
+                padding: 70px 40px;
                 border-radius: 0 20px 20px 0;
                 color: var(--black);
             }
@@ -261,6 +261,64 @@ export const HomeView = {
 
             #toastError {
                 background: var(--error);
+            }
+
+            @media screen and (min-height: 1080px) {
+                .same-row {
+                    flex-direction: column !important;
+                }
+            }
+
+            @media screen and (max-width: 1080px) {
+                .logo img {
+                    width: 100px !important;
+                }
+
+                .title h1 {
+                    font-size: 30px !important;
+                }
+
+                .title h3 {
+                    font-size: 20px !important;
+                }
+
+                .description {
+                    font-size: 16px !important;
+                }
+
+                .date-time {
+                    flex-direction: column;
+                }
+
+                .right-panel {
+                    padding: 40px 20px !important;
+                }
+            }
+
+            @media screen and (max-width: 940px) {
+                .container {
+                    padding: 0 !important;
+                }
+
+                .left-panel, right-panel {
+                    border-radius: 0 !important;
+                }
+
+                .right-panel {
+                    padding: 70px 40px !important;
+                }
+            }
+
+            @media screen and (max-height: 995px) {
+                .container {
+                   	height: 100%;
+                    overflow-y: auto;
+                }
+
+                .right-panel, .left-panel {
+                    height: auto !important;
+                    min-height: 100vh !important;
+                }
             }
             </style>
             <div class="container">
