@@ -113,7 +113,7 @@ export const HomeView = {
                 width: 100%;
                 height: 100%;
                 color: var(--main-text);
-                padding: 70px 40px;
+                padding: 40px 40px;
                 color: var(--black);
             }
 
@@ -416,7 +416,7 @@ export const HomeView = {
                                 <input type="text" id="address" required placeholder="Enter your address"/>
                             </div>
                             <div class="cta">
-                                <label>Contact Number</label>
+                                <label>Contact Number (Optional)</label>
                                 <input type="text" id="contact-number" maxlength="11" inputmode="numeric" placeholder="Phone number">
                             </div>
                         </div>
