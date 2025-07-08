@@ -409,7 +409,7 @@ export const HomeView = {
                 color: white;
             }
 
-            .btn-confirm:hover {
+            .btn-confirm:hover {F
                 background: var(--primary-dark);
             }
 
@@ -540,7 +540,7 @@ export const HomeView = {
                         <div class="signature-modal-content">
                         <h2>Digital Signature Required</h2>
                         <p class="signature-instructions">Please draw your signature in the box below to confirm your log entry</p>
-                        <canvas id="signatureCanvas" class="signature-canvas" width="500" height="300"></canvas>
+                        <canvas id="signatureCanvas" class="signature-canvas" width="400" height="200"></canvas>
                         <div class="signature-buttons">
                             <button type="button" class="btn-clear" onclick="clearSignature()">Clear</button>
                             <button type="button" class="btn-cancel" onclick="closeSignatureModal()">Cancel</button>
