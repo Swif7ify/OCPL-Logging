@@ -3,6 +3,7 @@ const path = require("path");
 const { ipcMain } = require("electron");
 const ExcelJS = require("exceljs");
 const fs = require("fs");
+const os = require("os");
 
 function createWindow() {
 	const mainWindow = new BrowserWindow({
@@ -40,7 +41,7 @@ app.on("activate", () => {
 
 ipcMain.handle("save-to-excel", async (event, data) => {
 	try {
-		const preferredDir = "C:\\Users\\earlo\\Downloads";
+		const preferredDir = path.join(os.homedir(), "Documents");
 		const filePath = path.join(preferredDir, "OCPL-log.xlsx");
 
 		if (!fs.existsSync(preferredDir)) {
