@@ -123,6 +123,7 @@ export const HomeView = {
                 gap: 20px;
                 flex-direction: row;
                 color: var(--black);
+                padding-left: 20px;
             }
 
             .title-header svg {
@@ -179,7 +180,7 @@ export const HomeView = {
                 align-items: center;
                 flex-direction: row;
                 width: 100%;
-                gap: 20px;
+                gap: 8px;
             }
 
             .cta {
@@ -320,6 +321,54 @@ export const HomeView = {
                 .right-panel, .left-panel {
                     height: auto !important;
                     min-height: 100vh !important;
+                }
+            }
+
+            @media screen and (max-height: 900px) {
+                .logo img {
+                    width: 100px;
+                    height: auto;
+                }
+
+                .title h1 {
+                    font-size: 28px;
+                }
+
+                .title h3 {
+                    font-size: 20px;
+                    font-weight: 500;
+                }
+
+                .description {
+                    font-weight: 400;
+                }
+
+                textarea {
+                    max-height: 50px;
+                }
+
+                .container {
+                    overflow-x: hidden;
+                }
+            }
+
+            @media screen and (max-height: 830px) {
+                .right-panel {
+                    padding: 20px;
+                    padding-bottom: 0px !important;
+                }
+                form {
+                    padding-bottom: 20px !important;
+                }
+            }
+
+            @media screen and (max-height: 775px) {
+                .title-header h1 {
+                    font-size: 24px;
+                }
+
+                form {
+                    padding-top: 20px !important;
                 }
             }
 
