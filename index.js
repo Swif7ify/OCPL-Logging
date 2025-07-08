@@ -1,7 +1,7 @@
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const { ipcMain } = require("electron");
-const XLSX = require("xlsx");
+const ExcelJS = require("exceljs");
 const fs = require("fs");
 
 function createWindow() {
@@ -47,34 +47,75 @@ ipcMain.handle("save-to-excel", async (event, data) => {
 			fs.mkdirSync(preferredDir, { recursive: true });
 		}
 
-		let workbook;
+		let workbook = new ExcelJS.Workbook();
 		let worksheet;
 
 		if (fs.existsSync(filePath)) {
-			workbook = XLSX.readFile(filePath);
-			worksheet = workbook.Sheets["Logs"];
+			await workbook.xlsx.readFile(filePath);
+			worksheet =
+				workbook.getWorksheet("Logs") || workbook.addWorksheet("Logs");
 		} else {
-			workbook = XLSX.utils.book_new();
-			worksheet = XLSX.utils.json_to_sheet([]);
-			XLSX.utils.book_append_sheet(workbook, worksheet, "Logs");
+			worksheet = workbook.addWorksheet("Logs");
+
+			worksheet.addRow([
+				"Timestamp",
+				"Full Name",
+				"Gender",
+				"Age",
+				"School/Office",
+				"Address",
+				"Contact Number",
+				"Purpose of Visit",
+				"Digital Signature",
+			]);
 		}
 
-		const existingData = XLSX.utils.sheet_to_json(worksheet);
-		existingData.push({
-			Timestamp: data.timestamp,
-			"Full Name": data.fullname,
-			Gender: data.gender,
-			Age: data.age,
-			"School/Office": data.schoolOffice,
-			Address: data.address,
-			"Contact Number": data.contactNumber,
-			"Purpose of Visit": data.purpose,
-		});
+		const nextRow = worksheet.rowCount + 1;
 
-		const newWorksheet = XLSX.utils.json_to_sheet(existingData);
-		workbook.Sheets["Logs"] = newWorksheet;
+		// Add the form data
+		worksheet.addRow([
+			data.timestamp,
+			data.fullname,
+			data.gender,
+			data.age,
+			data.schoolOffice,
+			data.address,
+			data.contactNumber,
+			data.purpose,
+			"",
+		]);
 
-		XLSX.writeFile(workbook, filePath);
+		if (data.signature) {
+			const base64Data = data.signature.replace(
+				/^data:image\/png;base64,/,
+				""
+			);
+			const imageBuffer = Buffer.from(base64Data, "base64");
+
+			const imageId = workbook.addImage({
+				buffer: imageBuffer,
+				extension: "png",
+			});
+
+			worksheet.addImage(imageId, {
+				tl: { col: 8, row: nextRow - 1 },
+				ext: { width: 150, height: 80 },
+			});
+
+			worksheet.getRow(nextRow).height = 60;
+		}
+
+		worksheet.getColumn(1).width = 20;
+		worksheet.getColumn(2).width = 25;
+		worksheet.getColumn(3).width = 12;
+		worksheet.getColumn(4).width = 8;
+		worksheet.getColumn(5).width = 30;
+		worksheet.getColumn(6).width = 30;
+		worksheet.getColumn(7).width = 15;
+		worksheet.getColumn(8).width = 30;
+		worksheet.getColumn(9).width = 20;
+
+		await workbook.xlsx.writeFile(filePath);
 
 		return { success: true };
 	} catch (error) {

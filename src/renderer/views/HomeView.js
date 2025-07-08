@@ -322,6 +322,102 @@ export const HomeView = {
                     min-height: 100vh !important;
                 }
             }
+
+            .signature-modal {
+                display: none;
+                position: fixed;
+                z-index: 10000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(5px);
+            }
+
+            .signature-modal-content {
+                background-color: #fff;
+                margin: 5% auto;
+                padding: 30px;
+                border-radius: 16px;
+                width: 80%;
+                max-width: 600px;
+                box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
+                text-align: center;
+            }
+
+            .signature-modal h2 {
+                color: var(--primary-dark);
+                margin-bottom: 20px;
+                font-size: 24px;
+            }
+
+            .signature-canvas {
+                border: 2px dashed var(--primary);
+                border-radius: 8px;
+                cursor: crosshair;
+                margin: 20px 0;
+                background: #fafafa;
+            }
+
+            .canvas-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                width: 100%;
+            }
+
+            .signature-buttons {
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+                margin-top: 20px;
+            }
+
+            .signature-buttons button {
+                padding: 12px 24px;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.2s;
+            }
+
+            .btn-clear {
+                background: #e5e7eb;
+                color: #374151;
+            }
+
+            .btn-clear:hover {
+                background: #d1d5db;
+            }
+
+            .btn-cancel {
+                background: var(--error);
+                color: white;
+            }
+
+            .btn-cancel:hover {
+                background: #b91c1c;
+            }
+
+            .btn-confirm {
+                background: var(--primary);
+                color: white;
+            }
+
+            .btn-confirm:hover {
+                background: var(--primary-dark);
+            }
+
+            .signature-instructions {
+                color: var(--sub-text);
+                font-size: 14px;
+                margin-bottom: 15px;
+            }
             </style>
             <div class="container">
                 <div class="left-panel">
@@ -437,10 +533,148 @@ export const HomeView = {
                         Error occurred!
                     </div>
                 </div>
+
+                <!-- Signature Modal -->
+                <div id="signatureModal" class="signature-modal">
+                    <div class="canvas-container">
+                        <div class="signature-modal-content">
+                        <h2>Digital Signature Required</h2>
+                        <p class="signature-instructions">Please draw your signature in the box below to confirm your log entry</p>
+                        <canvas id="signatureCanvas" class="signature-canvas" width="500" height="300"></canvas>
+                        <div class="signature-buttons">
+                            <button type="button" class="btn-clear" onclick="clearSignature()">Clear</button>
+                            <button type="button" class="btn-cancel" onclick="closeSignatureModal()">Cancel</button>
+                            <button type="button" class="btn-confirm" onclick="confirmSignature()">Confirm & Submit</button>
+                        </div>
+                    </div>
+                   </div>
+                </div>
             </div>
         `;
 	},
 	mount() {
+		let isDrawing = false;
+		let signatureData = null;
+		let currentFormData = null;
+		let canvasInitialized = false;
+
+		function initializeSignatureCanvas() {
+			if (canvasInitialized) return;
+			const canvas = document.getElementById("signatureCanvas");
+			const ctx = canvas.getContext("2d");
+
+			ctx.strokeStyle = "#000";
+			ctx.lineWidth = 2;
+			ctx.lineCap = "round";
+			ctx.lineJoin = "round";
+
+			canvas.addEventListener("mousedown", startDrawing);
+			canvas.addEventListener("mousemove", draw);
+			canvas.addEventListener("mouseup", stopDrawing);
+			canvas.addEventListener("mouseout", stopDrawing);
+
+			canvas.addEventListener("touchstart", handleTouch);
+			canvas.addEventListener("touchmove", handleTouch);
+			canvas.addEventListener("touchend", stopDrawing);
+
+			function startDrawing(e) {
+				isDrawing = true;
+				const rect = canvas.getBoundingClientRect();
+				ctx.beginPath();
+				ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+			}
+
+			function draw(e) {
+				if (!isDrawing) return;
+				const rect = canvas.getBoundingClientRect();
+				ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+				ctx.stroke();
+			}
+
+			function stopDrawing() {
+				if (isDrawing) {
+					isDrawing = false;
+					signatureData = canvas.toDataURL("image/png");
+				}
+			}
+
+			function handleTouch(e) {
+				e.preventDefault();
+				const touch = e.touches[0];
+				const mouseEvent = new MouseEvent(
+					e.type === "touchstart"
+						? "mousedown"
+						: e.type === "touchmove"
+						? "mousemove"
+						: "mouseup",
+					{
+						clientX: touch.clientX,
+						clientY: touch.clientY,
+					}
+				);
+				canvas.dispatchEvent(mouseEvent);
+			}
+			canvasInitialized = true;
+		}
+
+		window.clearSignature = function () {
+			const canvas = document.getElementById("signatureCanvas");
+			const ctx = canvas.getContext("2d");
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			signatureData = null;
+		};
+
+		window.closeSignatureModal = function () {
+			document.getElementById("signatureModal").style.display = "none";
+			clearSignature();
+		};
+
+		window.confirmSignature = function () {
+			if (!signatureData) {
+				showToastError(
+					"Please provide your signature before confirming"
+				);
+				return;
+			}
+
+			if (!currentFormData) {
+				showToastError("Form data is missing. Please try again.");
+				return;
+			}
+
+			currentFormData.signature = signatureData;
+
+			document.getElementById("signatureModal").style.display = "none";
+			saveToExcel(currentFormData);
+
+			currentFormData = null;
+			clearSignature();
+		};
+
+		function showSignatureModal(formData) {
+			currentFormData = formData;
+			document.getElementById("signatureModal").style.display = "block";
+			clearSignature();
+			initializeSignatureCanvas();
+		}
+
+		async function saveToExcel(formData) {
+			try {
+				const result = await window.electronAPI.saveToExcel(formData);
+				if (result.success) {
+					showToastSuccess("Log saved successfully!");
+					clearForm();
+				} else {
+					showToastError("Error saving data: " + result.error);
+				}
+			} catch (error) {
+				console.error("Error saving to Excel:", error);
+				showToastError(
+					"Error saving data. Please try again. " + error.message
+				);
+			}
+		}
+
 		function updateClock() {
 			const now = new Date();
 			const dateString = now.toLocaleDateString("en-US", {
@@ -496,7 +730,6 @@ export const HomeView = {
 			const address = document.getElementById("address").value.trim();
 			const purpose = document.getElementById("purpose").value.trim();
 
-			// Validation rules
 			if (!fullname) {
 				showToastError("Please enter your fullname");
 				return false;
@@ -619,7 +852,7 @@ export const HomeView = {
 					purpose: document.getElementById("purpose").value.trim(),
 				};
 
-				await saveToExcel(formData);
+				showSignatureModal(formData);
 			});
 		}
 	},
