@@ -386,43 +386,45 @@ export const HomeView = {
                         </div>
                     </div>
 
-                    <form>
+                    <form id="log-form">
                         <div class="form-group">
                             <label>Fullname <span>*</span></label>
-                            <input type="text" id="fullname" required placeholder="Enter your fullname"/>
+                            <input autofocus class="navigatable" type="text" id="fullname" required placeholder="Enter your fullname"/>
                         </div>
                         <div class="form-group same-row">
                             <div class="cta">
                                 <label>Gender <span>*</span></label>
-                                <select id="gender" required>
+                                <select class="navigatable" id="gender" required>
                                     <option value="">Select Gender</option>
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
+                                    <option value="non-binary">Non-Binary</option>
                                     <option value="other">Other</option>
+                                    <option value="prefer-not-to-answer">Prefer not to Answer</option>
                                 </select>
                             </div>
                             <div class="cta">
                                 <label>Age <span>*</span></label>
-                                <input type="number" id="age" required placeholder="Enter your age"/>
+                                <input class="navigatable" type="number" id="age" required placeholder="Enter your age"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label>School/Office <span>*</span></label>
-                            <input type="text" id="school-office" required placeholder="Enter your school/office"/>
+                            <input class="navigatable" type="text" id="school-office" required placeholder="Enter your school/office"/>
                         </div>
                         <div class="form-group r-same-row">
                             <div class="cta">
                                 <label>Address <span>*</span></label>
-                                <input type="text" id="address" required placeholder="Enter your address"/>
+                                <input class="navigatable" type="text" id="address" required placeholder="Enter your address"/>
                             </div>
                             <div class="cta">
                                 <label>Contact Number (Optional)</label>
-                                <input type="text" id="contact-number" maxlength="11" inputmode="numeric" placeholder="Phone number">
+                                <input class="navigatable" type="text" id="contact-number" maxlength="11" inputmode="numeric" placeholder="Phone number">
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Purpose of Visit <span>*</span></label>
-                            <textarea id="purpose" rows="4" required placeholder="Enter the purpose of your visit"></textarea>
+                            <textarea class="navigatable" id="purpose" rows="4" required placeholder="Enter the purpose of your visit"></textarea>
                         </div>
 
                         <button type="submit" id="submit-btn">Submit</button>
@@ -461,6 +463,28 @@ export const HomeView = {
 			const locEl = document.getElementById("current-location");
 			if (locEl) locEl.textContent = location;
 		}
+
+		const navigatable = document.getElementsByClassName("navigatable");
+
+		document.addEventListener("keydown", function (event) {
+			if (
+				(event.key === "ArrowDown" || event.key === "ArrowUp") &&
+				document.activeElement.classList.contains("navigatable")
+			) {
+				event.preventDefault();
+				const fields = Array.from(navigatable);
+				const idx = fields.indexOf(document.activeElement);
+				if (
+					event.key === "ArrowDown" &&
+					idx > -1 &&
+					idx < fields.length - 1
+				) {
+					fields[idx + 1].focus();
+				} else if (event.key === "ArrowUp" && idx > 0) {
+					fields[idx - 1].focus();
+				}
+			}
+		});
 
 		function validateForm() {
 			const fullname = document.getElementById("fullname").value.trim();
