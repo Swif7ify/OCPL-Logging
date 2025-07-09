@@ -13,7 +13,6 @@ export const HomeView = {
             	background: #f4f7f3;
             	margin: 0;
                 height: 100vh;
-                width: 100vw;
             }
 
             :root {
@@ -208,6 +207,11 @@ export const HomeView = {
                 outline: none;
             }
 
+            
+            textarea {
+                max-height: 50px;
+            }
+
             .form-group input:focus,
             .form-group select:focus,
             .form-group textarea:focus {
@@ -343,10 +347,6 @@ export const HomeView = {
                     font-weight: 400;
                 }
 
-                textarea {
-                    max-height: 50px;
-                }
-
                 .container {
                     overflow-x: hidden;
                 }
@@ -467,7 +467,73 @@ export const HomeView = {
                 font-size: 14px;
                 margin-bottom: 15px;
             }
+
+            .terms-policy {
+                user-select: none;
+            }
+
+            .custom-dropdown {
+                position: relative;
+                width: 100%;
+                user-select: none;
+                font-size: 16px;
+            }
+            .dropdown-selected {
+                background: #fff;
+                border: 1.5px solid #e0e2e5; /* Use the same gray as your input fields */
+                border-radius: 8px;
+                padding: 10px 14px;
+                cursor: pointer;
+                color: #222;
+                transition: border-color 0.2s;
+            }
+            .dropdown-selected.active {
+                border-color: var(--primary-dark); /* Green when open/active */
+            }
+            .dropdown-list {
+                display: none;
+                position: absolute;
+                background: #fff;
+                border: 1.5px solid var(--primary);
+                border-radius: 0 0 8px 8px;
+                width: 100%;
+                z-index: 10;
+                box-shadow: 0 4px 16px rgba(5,148,103,0.08);
+                margin-top: 2px;
+            }
+            .dropdown-list.open {
+                display: block;
+            }
+            .dropdown-item {
+                padding: 10px 14px;
+                cursor: pointer;
+                color: #222;
+                transition: background 0.2s;
+            }
+            .dropdown-item:hover {
+                background: var(--item-shadow-2);
+            }
+            .dropdown-item.highlighted {
+                background: var(--item-shadow-2);
+            }
+            .dropdown-item.other-item {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: #f9fafb;
+                cursor: default;
+            }
+            .dropdown-item.other-item input {
+                border: 1px solid var(--primary);
+                border-radius: 6px;
+                padding: 4px 8px;
+                font-size: 15px;
+                outline: none;
+                width: 120px;
+            }
             </style>
+
+
             <div class="container">
                 <div class="left-panel">
                     <div class="logo">
@@ -539,14 +605,19 @@ export const HomeView = {
                         <div class="form-group same-row">
                             <div class="cta">
                                 <label>Gender <span>*</span></label>
-                                <select class="navigatable" id="gender" required>
-                                    <option value="">Select Gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="non-binary">Non-Binary</option>
-                                    <option value="other">Other</option>
-                                    <option value="prefer-not-to-answer">Prefer not to Answer</option>
-                                </select>
+                                <div class="custom-dropdown" id="gender-dropdown">
+                                    <div class="dropdown-selected" id="gender-selected">Select Gender</div>
+                                    <div class="dropdown-list" id="gender-list">
+                                        <div class="dropdown-item" data-value="male">Male</div>
+                                        <div class="dropdown-item" data-value="female">Female</div>
+                                        <div class="dropdown-item" data-value="non-binary">Non-Binary</div>
+                                        <div class="dropdown-item" data-value="prefer-not-to-answer">Prefer not to Answer</div>
+                                        <div class="dropdown-item other-item">
+                                            Other: <input type="text" id="gender-other-inline" placeholder="Please specify" style="width:100%;"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="gender" required />
                             </div>
                             <div class="cta">
                                 <label>Age <span>*</span></label>
@@ -569,10 +640,29 @@ export const HomeView = {
                         </div>
                         <div class="form-group">
                             <label>Purpose of Visit <span>*</span></label>
-                            <textarea class="navigatable" id="purpose" rows="4" required placeholder="Enter the purpose of your visit"></textarea>
+                            <select class="navigatable" id="purpose-select" required>
+                                <option value="" disabled selected>Select purpose...</option>
+                                <option value="Library Visit">Library Visit</option>
+                                <option value="Seminar">Seminar</option>
+                                <option value="Workshop">Workshop</option>
+                                <option value="Training">Training</option>
+                                <option value="Meeting">Meeting</option>
+                                <option value="Event">Event</option>
+                                <option value="Research">Research</option>
+                                <option value="Borrow/Return Books">Borrow/Return Books</option>
+                            </select>
                         </div>
 
                         <button type="submit" id="submit-btn">Submit</button>
+
+                        <div class="terms-policy">
+                            <input type="checkbox" id="terms-checkbox" required>
+                            <label for="terms-checkbox">
+                                By checking this box, I declare that I am physically present at the event and agree to have my attendance officially recorded.
+                                I also grant permission for the collection and processing of my personal data in compliance with 
+                                <a href="#" id="privacy-link" style="color: var(--primary); text-decoration: underline; cursor: pointer;">data privacy regulations.</a>
+                            </label>
+                        </div>
                     </form>
 
                     <div id="toastSuccess">
@@ -597,6 +687,20 @@ export const HomeView = {
                         </div>
                     </div>
                    </div>
+                </div>
+
+                <div id="privacyModal" class="signature-modal">
+                    <div class="canvas-container">
+                        <div class="signature-modal-content" style="max-width: 600px;">
+                            <h2>Data Privacy Act of 2012 (RA 10173)</h2>
+                            <p style="text-align:justify;max-height:300px;overflow-y:auto;">
+                                This system collects and processes your personal data in accordance with the <b>Data Privacy Act of 2012 (RA 10173)</b> of the Philippines. Your information will be used solely for attendance, record-keeping, and reporting/statistical purposes by the Olongapo City Public Library. Your data will not be shared with unauthorized parties and will be handled with strict confidentiality. For more information, please contact the library administration.
+                            </p>
+                            <div class="signature-buttons">
+                                <button type="button" class="btn-cancel" id="closePrivacyModal">Close</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
@@ -754,6 +858,12 @@ export const HomeView = {
 				(event.key === "ArrowDown" || event.key === "ArrowUp") &&
 				document.activeElement.classList.contains("navigatable")
 			) {
+				// Check if the active element is the gender dropdown
+				if (document.activeElement.id === "gender-selected") {
+					// Let the dropdown handle its own navigation
+					return;
+				}
+
 				event.preventDefault();
 				const fields = Array.from(navigatable);
 				const idx = fields.indexOf(document.activeElement);
@@ -771,13 +881,15 @@ export const HomeView = {
 
 		function validateForm() {
 			const fullname = document.getElementById("fullname").value.trim();
-			const gender = document.getElementById("gender").value;
+			const genderInput = document.getElementById("gender");
+			const gender = genderInput ? genderInput.value : "";
 			const age = document.getElementById("age").value;
 			const schoolOffice = document
 				.getElementById("school-office")
 				.value.trim();
 			const address = document.getElementById("address").value.trim();
-			const purpose = document.getElementById("purpose").value.trim();
+			const purposeSelect = document.getElementById("purpose-select");
+			const purpose = purposeSelect ? purposeSelect.value.trim() : "";
 
 			if (!fullname) {
 				showToastError("Please enter your fullname");
@@ -865,12 +977,19 @@ export const HomeView = {
 
 		function clearForm() {
 			document.getElementById("fullname").value = "";
-			document.getElementById("gender").value = "";
 			document.getElementById("age").value = "";
 			document.getElementById("school-office").value = "";
 			document.getElementById("address").value = "";
 			document.getElementById("contact-number").value = "";
-			document.getElementById("purpose").value = "";
+			// Reset gender custom dropdown
+			const genderInput = document.getElementById("gender");
+			const genderSelected = document.getElementById("gender-selected");
+			const genderOtherInline = document.getElementById(
+				"gender-other-inline"
+			);
+			if (genderInput) genderInput.value = "";
+			if (genderSelected) genderSelected.textContent = "Select Gender";
+			if (genderOtherInline) genderOtherInline.value = "";
 		}
 
 		setInterval(updateClock, 1000);
@@ -889,7 +1008,7 @@ export const HomeView = {
 				const formData = {
 					timestamp: new Date().toLocaleString(),
 					fullname: document.getElementById("fullname").value.trim(),
-					gender: document.getElementById("gender").value,
+					gender: document.getElementById("gender").value || "",
 					age: parseInt(document.getElementById("age").value),
 					schoolOffice: document
 						.getElementById("school-office")
@@ -898,11 +1017,249 @@ export const HomeView = {
 					contactNumber: document
 						.getElementById("contact-number")
 						.value.trim(),
-					purpose: document.getElementById("purpose").value.trim(),
+					purpose: document
+						.getElementById("purpose-select")
+						.value.trim(),
 				};
 
 				showSignatureModal(formData);
 			});
+		}
+
+		// Privacy modal logic
+		const privacyLink = document.getElementById("privacy-link");
+		const privacyModal = document.getElementById("privacyModal");
+		const closePrivacyModalBtn =
+			document.getElementById("closePrivacyModal");
+
+		if (privacyLink && privacyModal && closePrivacyModalBtn) {
+			let escPrivacyListener = null;
+
+			privacyLink.addEventListener("click", function (e) {
+				e.preventDefault();
+				privacyModal.style.display = "flex";
+
+				// Add ESC key listener
+				escPrivacyListener = function (evt) {
+					if (evt.key === "Escape") {
+						privacyModal.style.display = "none";
+						document.removeEventListener(
+							"keydown",
+							escPrivacyListener
+						);
+					}
+				};
+				document.addEventListener("keydown", escPrivacyListener);
+			});
+
+			closePrivacyModalBtn.addEventListener("click", function () {
+				privacyModal.style.display = "none";
+				if (escPrivacyListener)
+					document.removeEventListener("keydown", escPrivacyListener);
+			});
+
+			privacyModal.addEventListener("click", function (e) {
+				if (e.target === privacyModal) {
+					privacyModal.style.display = "none";
+					if (escPrivacyListener)
+						document.removeEventListener(
+							"keydown",
+							escPrivacyListener
+						);
+				}
+			});
+		}
+
+		const genderSelect = document.getElementById("gender");
+		const genderOtherInput = document.getElementById("gender-other");
+
+		if (genderSelect && genderOtherInput) {
+			genderSelect.addEventListener("change", function () {
+				if (genderSelect.value === "other") {
+					genderOtherInput.style.display = "block";
+					genderOtherInput.required = true;
+					genderOtherInput.focus();
+				} else {
+					genderOtherInput.style.display = "none";
+					genderOtherInput.required = false;
+					genderOtherInput.value = "";
+				}
+			});
+		}
+
+		const genderDropdown = document.getElementById("gender-dropdown");
+		const genderSelected = document.getElementById("gender-selected");
+		const genderList = document.getElementById("gender-list");
+		const genderInput = document.getElementById("gender");
+		const genderOtherInline = document.getElementById(
+			"gender-other-inline"
+		);
+
+		if (
+			genderDropdown &&
+			genderSelected &&
+			genderList &&
+			genderInput &&
+			genderOtherInline
+		) {
+			let selectedIndex = -1;
+			const dropdownItems = genderList.querySelectorAll(
+				".dropdown-item:not(.other-item)"
+			);
+			const otherItem = genderList.querySelector(".other-item");
+
+			// Ensure we have dropdown items
+			if (!dropdownItems || dropdownItems.length === 0) {
+				console.warn("No dropdown items found for gender dropdown");
+				return;
+			}
+
+			// Only open/close when clicking the selected area, not the whole dropdown
+			genderSelected.addEventListener("click", function (e) {
+				genderList.classList.toggle("open");
+				genderSelected.classList.toggle("active");
+				if (genderList.classList.contains("open")) {
+					genderOtherInline.blur();
+					selectedIndex = -1; // Reset selection
+				}
+				e.stopPropagation();
+			});
+
+			// Add keyboard navigation
+			genderSelected.addEventListener("keydown", function (e) {
+				if (!genderList.classList.contains("open")) {
+					if (
+						e.key === "Enter" ||
+						e.key === "ArrowDown" ||
+						e.key === "ArrowUp"
+					) {
+						e.preventDefault();
+						genderList.classList.add("open");
+						genderSelected.classList.add("active");
+						selectedIndex = 0;
+						updateSelection();
+					}
+					// If Escape is pressed and dropdown is closed, blur and move to next field
+					if (e.key === "Escape") {
+						e.preventDefault();
+						genderSelected.blur();
+						// Move focus to next navigatable field
+						const navigatables = Array.from(
+							document.getElementsByClassName("navigatable")
+						);
+						const idx = navigatables.indexOf(genderSelected);
+						if (idx > -1 && idx < navigatables.length - 1) {
+							navigatables[idx + 1].focus();
+						}
+					}
+					return;
+				}
+
+				switch (e.key) {
+					case "ArrowDown":
+						e.preventDefault();
+						selectedIndex = Math.min(
+							selectedIndex + 1,
+							dropdownItems.length
+						);
+						updateSelection();
+						break;
+					case "ArrowUp":
+						e.preventDefault();
+						selectedIndex = Math.max(selectedIndex - 1, -1);
+						updateSelection();
+						break;
+					case "Enter":
+						e.preventDefault();
+						if (
+							selectedIndex >= 0 &&
+							selectedIndex < dropdownItems.length
+						) {
+							selectItem(dropdownItems[selectedIndex]);
+						} else if (selectedIndex === dropdownItems.length) {
+							// Focus on "Other" input
+							genderOtherInline.focus();
+						}
+						break;
+					case "Escape":
+						e.preventDefault();
+						genderList.classList.remove("open");
+						genderSelected.classList.remove("active");
+						selectedIndex = -1;
+						break;
+				}
+			});
+
+			function updateSelection() {
+				// Remove previous highlights
+				dropdownItems.forEach((item) =>
+					item.classList.remove("highlighted")
+				);
+				if (otherItem) {
+					otherItem.classList.remove("highlighted");
+				}
+
+				// Add highlight to current selection
+				if (
+					selectedIndex >= 0 &&
+					selectedIndex < dropdownItems.length
+				) {
+					dropdownItems[selectedIndex].classList.add("highlighted");
+				} else if (
+					selectedIndex === dropdownItems.length &&
+					otherItem
+				) {
+					otherItem.classList.add("highlighted");
+				}
+			}
+
+			function selectItem(item) {
+				if (!item) return;
+				genderSelected.textContent = item.textContent;
+				genderInput.value = item.getAttribute("data-value");
+				genderList.classList.remove("open");
+				genderSelected.classList.remove("active");
+				genderOtherInline.value = "";
+				selectedIndex = -1;
+			}
+
+			// Handle click on dropdown items (auto-close except "Other")
+			dropdownItems.forEach((item) => {
+				item.addEventListener("click", function (e) {
+					selectItem(item);
+					e.stopPropagation();
+				});
+			});
+
+			// Handle "Other" input
+			genderOtherInline.addEventListener("input", function (e) {
+				genderSelected.textContent =
+					"Other: " + genderOtherInline.value;
+				genderInput.value = genderOtherInline.value
+					? genderOtherInline.value
+					: "";
+			});
+
+			// Clicking on the "Other" item focuses the input, but does NOT close dropdown
+			if (otherItem) {
+				otherItem.addEventListener("click", function (e) {
+					genderOtherInline.focus();
+					e.stopPropagation();
+				});
+			}
+
+			// Close dropdown when clicking outside
+			document.addEventListener("click", function (e) {
+				if (!genderDropdown.contains(e.target)) {
+					genderList.classList.remove("open");
+					genderSelected.classList.remove("active");
+					selectedIndex = -1;
+				}
+			});
+
+			// Make dropdown focusable and navigatable
+			genderSelected.setAttribute("tabindex", "0");
+			genderSelected.classList.add("navigatable");
 		}
 	},
 };
