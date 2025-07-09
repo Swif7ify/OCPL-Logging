@@ -702,6 +702,56 @@ export const HomeView = {
                         </div>
                     </div>
                 </div>
+
+                <div id="adminPasswordModal" class="signature-modal">
+                  <div class="canvas-container">
+                    <div class="signature-modal-content" style="max-width: 400px;">
+                      <h2>Admin Access</h2>
+                      <p style="margin-bottom:10px;">Enter password to access reports:</p>
+                      <input type="password" id="adminPasswordInput" style="width:100%;padding:10px 14px;font-size:18px;border-radius:8px;border:1.5px solid #e0e2e5;outline:none;" autofocus />
+                      <div class="signature-buttons" style="margin-top:20px;">
+                        <button type="button" class="btn-cancel" id="closeAdminPasswordModal">Cancel</button>
+                        <button type="button" class="btn-confirm" id="submitAdminPassword">Submit</button>
+                      </div>
+                      <div id="adminPasswordError" style="color:#dc2626;margin-top:10px;display:none;">Incorrect password.</div>
+                    </div>
+                  </div>
+                </div>                <div id="reportOptionsModal" class="signature-modal">
+                    <div class="canvas-container">
+                        <div class="signature-modal-content" style="max-width: 400px;">
+                            <h2>Create Report</h2>
+                            <p style="margin-bottom:10px;">Select report range:</p>
+                            <div class="signature-buttons" style="flex-direction:column;gap:10px;">
+                                <button type="button" class="btn-confirm" id="report1Week">Last 1 Week</button>
+                                <button type="button" class="btn-confirm" id="report1Month">Last 1 Month</button>
+                                <button type="button" class="btn-confirm" id="reportCustom">Custom Range</button>
+                            </div>
+                            <div class="signature-buttons" style="margin-top:20px;">
+                                <button type="button" class="btn-cancel" id="closeReportOptionsModal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="customDateModal" class="signature-modal">
+                    <div class="canvas-container">
+                        <div class="signature-modal-content" style="max-width: 400px;">
+                            <h2>Custom Date Range</h2>
+                            <div style="margin-bottom:15px;">
+                                <label style="display:block;margin-bottom:5px;font-weight:500;">Start Date:</label>
+                                <input type="date" id="customStartDate" style="width:100%;padding:10px 14px;font-size:16px;border-radius:8px;border:1.5px solid #e0e2e5;outline:none;" />
+                            </div>
+                            <div style="margin-bottom:20px;">
+                                <label style="display:block;margin-bottom:5px;font-weight:500;">End Date:</label>
+                                <input type="date" id="customEndDate" style="width:100%;padding:10px 14px;font-size:16px;border-radius:8px;border:1.5px solid #e0e2e5;outline:none;" />
+                            </div>
+                            <div class="signature-buttons">
+                                <button type="button" class="btn-cancel" id="closeCustomDateModal">Cancel</button>
+                                <button type="button" class="btn-confirm" id="generateCustomReport">Generate Report</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
 	},
@@ -1243,5 +1293,200 @@ export const HomeView = {
 			genderSelected.setAttribute("tabindex", "0");
 			genderSelected.classList.add("navigatable");
 		}
+
+		// Modal logic for admin password and report options
+		const adminPasswordModal =
+			document.getElementById("adminPasswordModal");
+		const adminPasswordInput =
+			document.getElementById("adminPasswordInput");
+		const closeAdminPasswordModal = document.getElementById(
+			"closeAdminPasswordModal"
+		);
+		const submitAdminPassword = document.getElementById(
+			"submitAdminPassword"
+		);
+		const adminPasswordError =
+			document.getElementById("adminPasswordError");
+		const reportOptionsModal =
+			document.getElementById("reportOptionsModal");
+		const closeReportOptionsModal = document.getElementById(
+			"closeReportOptionsModal"
+		);
+		const customDateModal = document.getElementById("customDateModal");
+		const closeCustomDateModal = document.getElementById(
+			"closeCustomDateModal"
+		);
+		const generateCustomReport = document.getElementById(
+			"generateCustomReport"
+		);
+		const customStartDate = document.getElementById("customStartDate");
+		const customEndDate = document.getElementById("customEndDate");
+
+		function showAdminPasswordModal() {
+			adminPasswordModal.style.display = "flex";
+			adminPasswordInput.value = "";
+			adminPasswordError.style.display = "none";
+			setTimeout(() => adminPasswordInput.focus(), 100);
+		}
+		function hideAdminPasswordModal() {
+			adminPasswordModal.style.display = "none";
+		}
+		function showReportOptionsModal() {
+			reportOptionsModal.style.display = "flex";
+		}
+		function hideReportOptionsModal() {
+			reportOptionsModal.style.display = "none";
+		}
+		function showCustomDateModal() {
+			customDateModal.style.display = "flex";
+			// Set default dates
+			const today = new Date();
+			const oneWeekAgo = new Date(
+				today.getTime() - 7 * 24 * 60 * 60 * 1000
+			);
+			customStartDate.value = oneWeekAgo.toISOString().split("T")[0];
+			customEndDate.value = today.toISOString().split("T")[0];
+		}
+		function hideCustomDateModal() {
+			customDateModal.style.display = "none";
+		}
+
+		async function generateReport(
+			reportType,
+			startDate = null,
+			endDate = null
+		) {
+			try {
+				showToastSuccess("Generating report...");
+				const result = await window.electronAPI.generateReport(
+					reportType,
+					startDate,
+					endDate
+				);
+
+				if (result.success) {
+					showToastSuccess(
+						`Report generated successfully! ${result.recordCount} records found. File saved to Documents folder.`
+					);
+					hideReportOptionsModal();
+					hideCustomDateModal();
+				} else {
+					showToastError(
+						`Failed to generate report: ${result.error}`
+					);
+				}
+			} catch (error) {
+				console.error("Error generating report:", error);
+				showToastError("Error generating report. Please try again.");
+			}
+		}
+
+		if (closeAdminPasswordModal) {
+			closeAdminPasswordModal.addEventListener(
+				"click",
+				hideAdminPasswordModal
+			);
+		}
+		if (submitAdminPassword) {
+			submitAdminPassword.addEventListener("click", function () {
+				if (adminPasswordInput.value === "OCPLAdmin2025") {
+					hideAdminPasswordModal();
+					showReportOptionsModal();
+				} else {
+					adminPasswordError.style.display = "block";
+					adminPasswordInput.value = "";
+					adminPasswordInput.focus();
+				}
+			});
+		}
+		if (adminPasswordInput) {
+			adminPasswordInput.addEventListener("keydown", function (e) {
+				if (e.key === "Enter") {
+					submitAdminPassword.click();
+				}
+				if (e.key === "Escape") {
+					hideAdminPasswordModal();
+				}
+			});
+		}
+		if (closeReportOptionsModal) {
+			closeReportOptionsModal.addEventListener(
+				"click",
+				hideReportOptionsModal
+			);
+		}
+
+		// Report option handlers
+		const report1Week = document.getElementById("report1Week");
+		const report1Month = document.getElementById("report1Month");
+		const reportCustom = document.getElementById("reportCustom");
+
+		if (report1Week) {
+			report1Week.addEventListener("click", function () {
+				generateReport("1week");
+			});
+		}
+		if (report1Month) {
+			report1Month.addEventListener("click", function () {
+				generateReport("1month");
+			});
+		}
+		if (reportCustom) {
+			reportCustom.addEventListener("click", function () {
+				hideReportOptionsModal();
+				showCustomDateModal();
+			});
+		}
+
+		// Custom date modal handlers
+		if (closeCustomDateModal) {
+			closeCustomDateModal.addEventListener("click", function () {
+				hideCustomDateModal();
+				showReportOptionsModal();
+			});
+		}
+		if (generateCustomReport) {
+			generateCustomReport.addEventListener("click", function () {
+				const startDate = customStartDate.value;
+				const endDate = customEndDate.value;
+
+				if (!startDate || !endDate) {
+					showToastError("Please select both start and end dates.");
+					return;
+				}
+
+				if (new Date(startDate) > new Date(endDate)) {
+					showToastError("Start date cannot be later than end date.");
+					return;
+				}
+
+				generateReport("custom", startDate, endDate);
+			});
+		}
+
+		// ESC closes modals
+		if (reportOptionsModal) {
+			reportOptionsModal.addEventListener("keydown", function (e) {
+				if (e.key === "Escape") {
+					hideReportOptionsModal();
+				}
+			});
+		}
+		if (customDateModal) {
+			customDateModal.addEventListener("keydown", function (e) {
+				if (e.key === "Escape") {
+					hideCustomDateModal();
+					showReportOptionsModal();
+				}
+			});
+		}
+
+		// Global shortcut: Ctrl+Shift+B
+		window.addEventListener("keydown", function (e) {
+			if (e.ctrlKey && e.shiftKey && (e.key === "B" || e.key === "b")) {
+				e.preventDefault();
+				showAdminPasswordModal();
+			}
+		});
 	},
 };
