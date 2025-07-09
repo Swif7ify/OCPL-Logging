@@ -247,7 +247,7 @@ export const HomeView = {
                 position: fixed;
                 top: 40px;
                 right: 40px;
-                z-index: 9999;
+                z-index: 99999;
                 min-width: 200px;
                 padding: 16px 24px;
                 color: #fff;
@@ -375,7 +375,7 @@ export const HomeView = {
             .signature-modal {
                 display: none;
                 position: fixed;
-                z-index: 10000;
+                z-index: 9999;
                 left: 0;
                 top: 0;
                 width: 100%;
@@ -664,13 +664,6 @@ export const HomeView = {
                             </label>
                         </div>
                     </form>
-
-                    <div id="toastSuccess">
-                        Log successfully!
-                    </div>
-                    <div id="toastError">
-                        Error occurred!
-                    </div>
                 </div>
 
                 <!-- Signature Modal -->
@@ -753,6 +746,13 @@ export const HomeView = {
                     </div>
                 </div>
             </div>
+            <div id="toastSuccess">
+                Log successfully!
+            </div>
+            <div id="toastError">
+                Error occurred!
+            </div>
+            
         `;
 	},
 	mount() {
