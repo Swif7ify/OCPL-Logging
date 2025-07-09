@@ -30,8 +30,8 @@ export const HomeView = {
             }
 
             .container {
-                height: 100vh;
-                width: 100vw;
+                height: 100dvh;
+                width: 100dvw;
                 display: flex;
                 flex-direction: row;
                 width: 100%;
@@ -480,7 +480,7 @@ export const HomeView = {
             }
             .dropdown-selected {
                 background: #fff;
-                border: 1.5px solid #e0e2e5; /* Use the same gray as your input fields */
+                border: 1.5px solid #e0e2e5;
                 border-radius: 8px;
                 padding: 10px 14px;
                 cursor: pointer;
@@ -488,7 +488,7 @@ export const HomeView = {
                 transition: border-color 0.2s;
             }
             .dropdown-selected.active {
-                border-color: var(--primary-dark); /* Green when open/active */
+                border-color: var(--primary-dark);
             }
             .dropdown-list {
                 display: none;
@@ -508,10 +508,11 @@ export const HomeView = {
                 padding: 10px 14px;
                 cursor: pointer;
                 color: #222;
-                transition: background 0.2s;
+                // transition: background 0.2s;
             }
-            .dropdown-item:hover {
-                background: var(--item-shadow-2);
+            .dropdown-item:hover:not(:last-child) {
+                background: #0078d7;
+                color: #fff;
             }
             .dropdown-item.highlighted {
                 background: var(--item-shadow-2);
@@ -533,7 +534,6 @@ export const HomeView = {
             }
             </style>
 
-
             <div class="container">
                 <div class="left-panel">
                     <div class="logo">
@@ -544,7 +544,7 @@ export const HomeView = {
                         <h3>Logging Management System</h3>
                     </div>
                     <div class="description">
-                        <p>Welcome to our digital log system. Please fill out the form before going inside the library. Thank you for your cooperation.</p>
+                        <p>Welcome to our digital log system. Please fill out the form before proceeding. Thank you for your cooperation.</p>
                     </div>
                     <div class="features">
                         <ul>
@@ -858,9 +858,7 @@ export const HomeView = {
 				(event.key === "ArrowDown" || event.key === "ArrowUp") &&
 				document.activeElement.classList.contains("navigatable")
 			) {
-				// Check if the active element is the gender dropdown
 				if (document.activeElement.id === "gender-selected") {
-					// Let the dropdown handle its own navigation
 					return;
 				}
 
@@ -981,7 +979,6 @@ export const HomeView = {
 			document.getElementById("school-office").value = "";
 			document.getElementById("address").value = "";
 			document.getElementById("contact-number").value = "";
-			// Reset gender custom dropdown
 			const genderInput = document.getElementById("gender");
 			const genderSelected = document.getElementById("gender-selected");
 			const genderOtherInline = document.getElementById(
@@ -1026,7 +1023,6 @@ export const HomeView = {
 			});
 		}
 
-		// Privacy modal logic
 		const privacyLink = document.getElementById("privacy-link");
 		const privacyModal = document.getElementById("privacyModal");
 		const closePrivacyModalBtn =
@@ -1039,7 +1035,6 @@ export const HomeView = {
 				e.preventDefault();
 				privacyModal.style.display = "flex";
 
-				// Add ESC key listener
 				escPrivacyListener = function (evt) {
 					if (evt.key === "Escape") {
 						privacyModal.style.display = "none";
@@ -1108,24 +1103,21 @@ export const HomeView = {
 			);
 			const otherItem = genderList.querySelector(".other-item");
 
-			// Ensure we have dropdown items
 			if (!dropdownItems || dropdownItems.length === 0) {
 				console.warn("No dropdown items found for gender dropdown");
 				return;
 			}
 
-			// Only open/close when clicking the selected area, not the whole dropdown
 			genderSelected.addEventListener("click", function (e) {
 				genderList.classList.toggle("open");
 				genderSelected.classList.toggle("active");
 				if (genderList.classList.contains("open")) {
 					genderOtherInline.blur();
-					selectedIndex = -1; // Reset selection
+					selectedIndex = -1;
 				}
 				e.stopPropagation();
 			});
 
-			// Add keyboard navigation
 			genderSelected.addEventListener("keydown", function (e) {
 				if (!genderList.classList.contains("open")) {
 					if (
@@ -1139,11 +1131,9 @@ export const HomeView = {
 						selectedIndex = 0;
 						updateSelection();
 					}
-					// If Escape is pressed and dropdown is closed, blur and move to next field
 					if (e.key === "Escape") {
 						e.preventDefault();
 						genderSelected.blur();
-						// Move focus to next navigatable field
 						const navigatables = Array.from(
 							document.getElementsByClassName("navigatable")
 						);
@@ -1177,7 +1167,6 @@ export const HomeView = {
 						) {
 							selectItem(dropdownItems[selectedIndex]);
 						} else if (selectedIndex === dropdownItems.length) {
-							// Focus on "Other" input
 							genderOtherInline.focus();
 						}
 						break;
@@ -1191,7 +1180,6 @@ export const HomeView = {
 			});
 
 			function updateSelection() {
-				// Remove previous highlights
 				dropdownItems.forEach((item) =>
 					item.classList.remove("highlighted")
 				);
@@ -1199,7 +1187,6 @@ export const HomeView = {
 					otherItem.classList.remove("highlighted");
 				}
 
-				// Add highlight to current selection
 				if (
 					selectedIndex >= 0 &&
 					selectedIndex < dropdownItems.length
@@ -1223,7 +1210,6 @@ export const HomeView = {
 				selectedIndex = -1;
 			}
 
-			// Handle click on dropdown items (auto-close except "Other")
 			dropdownItems.forEach((item) => {
 				item.addEventListener("click", function (e) {
 					selectItem(item);
@@ -1231,7 +1217,6 @@ export const HomeView = {
 				});
 			});
 
-			// Handle "Other" input
 			genderOtherInline.addEventListener("input", function (e) {
 				genderSelected.textContent =
 					"Other: " + genderOtherInline.value;
@@ -1240,7 +1225,6 @@ export const HomeView = {
 					: "";
 			});
 
-			// Clicking on the "Other" item focuses the input, but does NOT close dropdown
 			if (otherItem) {
 				otherItem.addEventListener("click", function (e) {
 					genderOtherInline.focus();
@@ -1248,7 +1232,6 @@ export const HomeView = {
 				});
 			}
 
-			// Close dropdown when clicking outside
 			document.addEventListener("click", function (e) {
 				if (!genderDropdown.contains(e.target)) {
 					genderList.classList.remove("open");
@@ -1257,7 +1240,6 @@ export const HomeView = {
 				}
 			});
 
-			// Make dropdown focusable and navigatable
 			genderSelected.setAttribute("tabindex", "0");
 			genderSelected.classList.add("navigatable");
 		}
