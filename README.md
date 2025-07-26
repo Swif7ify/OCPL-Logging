@@ -39,6 +39,16 @@ Start the Electron application:
 npm start
 ```
 
+### Building the App (for Distribution)
+
+To package the application for Windows, run:
+
+```sh
+npm run build
+```
+
+The installer and packaged app will be generated in the `dist/` folder. You can distribute the `.exe` installer or the unpacked app as needed.
+
 ## Usage
 
 -   Fill out the registration form and provide a digital signature to log your visit.
