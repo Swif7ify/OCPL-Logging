@@ -9,4 +9,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
 			customStartDate,
 			customEndDate
 		),
+	exportData: (exportOptions) =>
+		ipcRenderer.invoke("export-data", exportOptions),
+	getDashboardStats: () => ipcRenderer.invoke("get-dashboard-stats"),
 });

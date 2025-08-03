@@ -532,6 +532,46 @@ export const HomeView = {
                 outline: none;
                 width: 120px;
             }
+
+            /* Enhanced Report Button Styles */
+            .report-quick-btn {
+                transition: all 0.3s ease;
+                border: 2px solid transparent;
+                text-align: left;
+            }
+            
+            .report-quick-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(5, 148, 103, 0.2);
+                border-color: rgba(255, 255, 255, 0.3);
+            }
+            
+            .report-custom-btn {
+                transition: all 0.3s ease;
+                border: 2px solid transparent;
+            }
+            
+            .report-custom-btn:hover {
+                background: #5b21b6 !important;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+            }
+            
+            /* Enhanced input focus styles */
+            #customStartDate:focus,
+            #customEndDate:focus {
+                border-color: #059669 !important;
+                box-shadow: 0 0 0 3px rgba(5, 150, 103, 0.1);
+            }
+            
+            /* Toast improvements */
+            #toastSuccess {
+                z-index: 10000;
+            }
+            
+            #toastError {
+                z-index: 10000;
+            }
             </style>
 
             <div class="container">
@@ -711,16 +751,61 @@ export const HomeView = {
                   </div>
                 </div>                <div id="reportOptionsModal" class="signature-modal">
                     <div class="canvas-container">
-                        <div class="signature-modal-content" style="max-width: 400px;">
-                            <h2>Create Report</h2>
-                            <p style="margin-bottom:10px;">Select report range:</p>
-                            <div class="signature-buttons" style="flex-direction:column;gap:10px;">
-                                <button type="button" class="btn-confirm" id="report1Week">Last 1 Week</button>
-                                <button type="button" class="btn-confirm" id="report1Month">Last 1 Month</button>
-                                <button type="button" class="btn-confirm" id="reportCustom">Custom Range</button>
+                        <div class="signature-modal-content" style="max-width: 500px;">
+                            <h2>📊 Generate Analytics Report</h2>
+                            <p style="margin-bottom:20px;color:#6b7280;">Select a report period to generate comprehensive visitor analytics:</p>
+                            
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;">
+                                <button type="button" class="btn-confirm report-quick-btn" id="reportToday" style="padding:15px;font-size:14px;">
+                                    <div style="font-weight:600;">📅 Today</div>
+                                    <div style="font-size:12px;opacity:0.8;">Current day</div>
+                                </button>
+                                <button type="button" class="btn-confirm report-quick-btn" id="report1Week" style="padding:15px;font-size:14px;">
+                                    <div style="font-weight:600;">📅 Last 7 Days</div>
+                                    <div style="font-size:12px;opacity:0.8;">Weekly report</div>
+                                </button>
+                                <button type="button" class="btn-confirm report-quick-btn" id="report1Month" style="padding:15px;font-size:14px;">
+                                    <div style="font-weight:600;">📅 Last Month</div>
+                                    <div style="font-size:12px;opacity:0.8;">30 days</div>
+                                </button>
+                                <button type="button" class="btn-confirm report-quick-btn" id="report3Months" style="padding:15px;font-size:14px;">
+                                    <div style="font-weight:600;">📅 Last 3 Months</div>
+                                    <div style="font-size:12px;opacity:0.8;">Quarterly</div>
+                                </button>
+                                <button type="button" class="btn-confirm report-quick-btn" id="report6Months" style="padding:15px;font-size:14px;">
+                                    <div style="font-weight:600;">📅 Last 6 Months</div>
+                                    <div style="font-size:12px;opacity:0.8;">Semi-annual</div>
+                                </button>
+                                <button type="button" class="btn-confirm report-quick-btn" id="report1Year" style="padding:15px;font-size:14px;">
+                                    <div style="font-weight:600;">📅 Last Year</div>
+                                    <div style="font-size:12px;opacity:0.8;">Annual report</div>
+                                </button>
                             </div>
+                            
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+                                <button type="button" class="btn-confirm" id="dashboardStats" style="padding:15px;font-size:14px;background:#8b5cf6;">
+                                    <div style="font-weight:600;">📊 View Dashboard</div>
+                                    <div style="font-size:12px;opacity:0.8;">Live statistics</div>
+                                </button>
+                                <button type="button" class="btn-confirm" id="exportData" style="padding:15px;font-size:14px;background:#f59e0b;">
+                                    <div style="font-weight:600;">💾 Export Data</div>
+                                    <div style="font-size:12px;opacity:0.8;">Backup database</div>
+                                </button>
+                            </div>
+                            
+                            <div style="border-top:1px solid #e5e7eb;padding-top:15px;margin-bottom:20px;">
+                                <button type="button" class="btn-confirm report-custom-btn" id="reportCustom" style="width:100%;padding:15px;background:#6366f1;">
+                                    <div style="font-weight:600;">🗓️ Custom Date Range</div>
+                                    <div style="font-size:12px;opacity:0.8;">Choose specific start and end dates</div>
+                                </button>
+                            </div>
+                            
                             <div class="signature-buttons" style="margin-top:20px;">
                                 <button type="button" class="btn-cancel" id="closeReportOptionsModal">Close</button>
+                            </div>
+                            
+                            <div style="margin-top:15px;padding:10px;background:#f8fafc;border-radius:6px;font-size:12px;color:#64748b;">
+                                💡 <strong>Tip:</strong> Reports include visitor analytics, demographics, trends, and comprehensive statistics in multiple Excel sheets.
                             </div>
                         </div>
                     </div>
@@ -728,19 +813,90 @@ export const HomeView = {
 
                 <div id="customDateModal" class="signature-modal">
                     <div class="canvas-container">
-                        <div class="signature-modal-content" style="max-width: 400px;">
-                            <h2>Custom Date Range</h2>
-                            <div style="margin-bottom:15px;">
-                                <label style="display:block;margin-bottom:5px;font-weight:500;">Start Date:</label>
-                                <input type="date" id="customStartDate" style="width:100%;padding:10px 14px;font-size:16px;border-radius:8px;border:1.5px solid #e0e2e5;outline:none;" />
+                        <div class="signature-modal-content" style="max-width: 450px;">
+                            <h2>📅 Custom Date Range Report</h2>
+                            <p style="margin-bottom:20px;color:#6b7280;">Select the exact date range for your custom report:</p>
+                            
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
+                                <div>
+                                    <label style="display:block;margin-bottom:8px;font-weight:600;color:#374151;">📅 Start Date:</label>
+                                    <input type="date" id="customStartDate" style="width:100%;padding:12px 14px;font-size:16px;border-radius:8px;border:2px solid #e5e7eb;outline:none;transition:border-color 0.2s;" />
+                                </div>
+                                <div>
+                                    <label style="display:block;margin-bottom:8px;font-weight:600;color:#374151;">📅 End Date:</label>
+                                    <input type="date" id="customEndDate" style="width:100%;padding:12px 14px;font-size:16px;border-radius:8px;border:2px solid #e5e7eb;outline:none;transition:border-color 0.2s;" />
+                                </div>
                             </div>
-                            <div style="margin-bottom:20px;">
-                                <label style="display:block;margin-bottom:5px;font-weight:500;">End Date:</label>
-                                <input type="date" id="customEndDate" style="width:100%;padding:10px 14px;font-size:16px;border-radius:8px;border:1.5px solid #e0e2e5;outline:none;" />
+                            
+                            <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px;padding:12px;margin-bottom:20px;">
+                                <div style="font-size:13px;color:#0369a1;">
+                                    <strong>📊 Your report will include:</strong><br>
+                                    • Executive summary with key metrics<br>
+                                    • Detailed visitor data<br>
+                                    • Analytics dashboard with charts<br>
+                                    • Trends analysis (daily/hourly patterns)<br>
+                                    • Demographic breakdowns
+                                </div>
                             </div>
+                            
                             <div class="signature-buttons">
                                 <button type="button" class="btn-cancel" id="closeCustomDateModal">Cancel</button>
-                                <button type="button" class="btn-confirm" id="generateCustomReport">Generate Report</button>
+                                <button type="button" class="btn-confirm" id="generateCustomReport" style="background:#059669;">📈 Generate Report</button>
+                            </div>
+                            
+                            <div style="margin-top:12px;text-align:center;font-size:11px;color:#9ca3af;">
+                                Reports are saved to your Documents folder
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dashboardModal" class="signature-modal">
+                    <div class="canvas-container">
+                        <div class="signature-modal-content" style="max-width: 700px;">
+                            <h2>📊 Live Dashboard</h2>
+                            <p style="margin-bottom:20px;color:#6b7280;">Real-time visitor statistics and analytics</p>
+                            
+                            <div id="dashboardContent" style="text-align:left;">
+                                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:15px;margin-bottom:25px;">
+                                    <div style="background:#dbeafe;border-radius:8px;padding:15px;text-align:center;">
+                                        <div style="font-size:24px;font-weight:bold;color:#1d4ed8;" id="totalVisitors">-</div>
+                                        <div style="font-size:12px;color:#64748b;">Total Visitors</div>
+                                    </div>
+                                    <div style="background:#dcfce7;border-radius:8px;padding:15px;text-align:center;">
+                                        <div style="font-size:24px;font-weight:bold;color:#059669;" id="todayVisitors">-</div>
+                                        <div style="font-size:12px;color:#64748b;">Today</div>
+                                    </div>
+                                    <div style="background:#fef3c7;border-radius:8px;padding:15px;text-align:center;">
+                                        <div style="font-size:24px;font-weight:bold;color:#d97706;" id="thisWeekVisitors">-</div>
+                                        <div style="font-size:12px;color:#64748b;">This Week</div>
+                                    </div>
+                                    <div style="background:#fce7f3;border-radius:8px;padding:15px;text-align:center;">
+                                        <div style="font-size:24px;font-weight:bold;color:#be185d;" id="thisMonthVisitors">-</div>
+                                        <div style="font-size:12px;color:#64748b;">This Month</div>
+                                    </div>
+                                </div>
+                                
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:25px;">
+                                    <div style="background:#f8fafc;border-radius:8px;padding:15px;">
+                                        <h4 style="margin:0 0 10px 0;color:#374151;">👥 Gender Distribution</h4>
+                                        <div id="genderStats" style="font-size:14px;"></div>
+                                    </div>
+                                    <div style="background:#f8fafc;border-radius:8px;padding:15px;">
+                                        <h4 style="margin:0 0 10px 0;color:#374151;">🎯 Top Purposes</h4>
+                                        <div id="purposeStats" style="font-size:14px;"></div>
+                                    </div>
+                                </div>
+                                
+                                <div style="background:#f8fafc;border-radius:8px;padding:15px;">
+                                    <h4 style="margin:0 0 15px 0;color:#374151;">👤 Recent Visitors</h4>
+                                    <div id="recentVisitors" style="font-size:13px;max-height:200px;overflow-y:auto;"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="signature-buttons" style="margin-top:25px;">
+                                <button type="button" class="btn-cancel" id="closeDashboardModal">Close</button>
+                                <button type="button" class="btn-confirm" id="refreshDashboard" style="background:#6366f1;">🔄 Refresh</button>
                             </div>
                         </div>
                     </div>
@@ -1200,98 +1356,72 @@ export const HomeView = {
 						e.preventDefault();
 						selectedIndex = Math.min(
 							selectedIndex + 1,
-							dropdownItems.length
+							dropdownItems.length - 1
 						);
 						updateSelection();
 						break;
 					case "ArrowUp":
 						e.preventDefault();
-						selectedIndex = Math.max(selectedIndex - 1, -1);
+						selectedIndex = Math.max(selectedIndex - 1, 0);
 						updateSelection();
 						break;
 					case "Enter":
 						e.preventDefault();
-						if (
-							selectedIndex >= 0 &&
-							selectedIndex < dropdownItems.length
-						) {
+						if (selectedIndex >= 0) {
 							selectItem(dropdownItems[selectedIndex]);
-						} else if (selectedIndex === dropdownItems.length) {
-							genderOtherInline.focus();
 						}
 						break;
 					case "Escape":
 						e.preventDefault();
 						genderList.classList.remove("open");
 						genderSelected.classList.remove("active");
-						selectedIndex = -1;
 						break;
 				}
 			});
 
 			function updateSelection() {
-				dropdownItems.forEach((item) =>
-					item.classList.remove("highlighted")
-				);
-				if (otherItem) {
-					otherItem.classList.remove("highlighted");
-				}
-
-				if (
-					selectedIndex >= 0 &&
-					selectedIndex < dropdownItems.length
-				) {
-					dropdownItems[selectedIndex].classList.add("highlighted");
-				} else if (
-					selectedIndex === dropdownItems.length &&
-					otherItem
-				) {
-					otherItem.classList.add("highlighted");
-				}
+				dropdownItems.forEach((item, index) => {
+					item.classList.toggle(
+						"highlighted",
+						index === selectedIndex
+					);
+				});
 			}
 
 			function selectItem(item) {
-				if (!item) return;
+				const value = item.getAttribute("data-value");
+				genderInput.value = value;
 				genderSelected.textContent = item.textContent;
-				genderInput.value = item.getAttribute("data-value");
 				genderList.classList.remove("open");
 				genderSelected.classList.remove("active");
-				genderOtherInline.value = "";
-				selectedIndex = -1;
 			}
 
 			dropdownItems.forEach((item) => {
-				item.addEventListener("click", function (e) {
-					selectItem(item);
-					e.stopPropagation();
+				item.addEventListener("click", function () {
+					selectItem(this);
 				});
 			});
 
-			genderOtherInline.addEventListener("input", function (e) {
-				genderSelected.textContent =
-					"Other: " + genderOtherInline.value;
-				genderInput.value = genderOtherInline.value
-					? genderOtherInline.value
-					: "";
+			genderOtherInline.addEventListener("input", function () {
+				if (this.value.trim()) {
+					genderInput.value = this.value.trim();
+					genderSelected.textContent = `Other: ${this.value.trim()}`;
+				}
 			});
 
-			if (otherItem) {
-				otherItem.addEventListener("click", function (e) {
-					genderOtherInline.focus();
-					e.stopPropagation();
-				});
-			}
+			genderOtherInline.addEventListener("keydown", function (e) {
+				if (e.key === "Escape") {
+					genderList.classList.remove("open");
+					genderSelected.classList.remove("active");
+				}
+			});
 
 			document.addEventListener("click", function (e) {
 				if (!genderDropdown.contains(e.target)) {
 					genderList.classList.remove("open");
 					genderSelected.classList.remove("active");
-					selectedIndex = -1;
 				}
 			});
-
-			genderSelected.setAttribute("tabindex", "0");
-			genderSelected.classList.add("navigatable");
 		}
 
 		// Modal logic for admin password and report options
@@ -1322,6 +1452,15 @@ export const HomeView = {
 		const customStartDate = document.getElementById("customStartDate");
 		const customEndDate = document.getElementById("customEndDate");
 
+		// Dashboard modal elements
+		const dashboardModal = document.getElementById("dashboardModal");
+		const closeDashboardModal = document.getElementById(
+			"closeDashboardModal"
+		);
+		const refreshDashboard = document.getElementById("refreshDashboard");
+		const dashboardStats = document.getElementById("dashboardStats");
+		const exportData = document.getElementById("exportData");
+
 		function showAdminPasswordModal() {
 			adminPasswordModal.style.display = "flex";
 			adminPasswordInput.value = "";
@@ -1351,13 +1490,138 @@ export const HomeView = {
 			customDateModal.style.display = "none";
 		}
 
+		function showDashboardModal() {
+			dashboardModal.style.display = "flex";
+			loadDashboardStats();
+		}
+		function hideDashboardModal() {
+			dashboardModal.style.display = "none";
+		}
+
+		async function loadDashboardStats() {
+			try {
+				showToastSuccess("Loading dashboard data...");
+				const result = await window.electronAPI.getDashboardStats();
+
+				if (result.success) {
+					const stats = result.stats;
+
+					// Update main counters
+					document.getElementById("totalVisitors").textContent =
+						stats.totalVisitors;
+					document.getElementById("todayVisitors").textContent =
+						stats.todayVisitors;
+					document.getElementById("thisWeekVisitors").textContent =
+						stats.thisWeekVisitors;
+					document.getElementById("thisMonthVisitors").textContent =
+						stats.thisMonthVisitors;
+
+					// Update gender stats
+					const genderContainer =
+						document.getElementById("genderStats");
+					genderContainer.innerHTML = "";
+					Object.entries(stats.genderStats).forEach(
+						([gender, count]) => {
+							const percentage = (
+								(count / stats.totalVisitors) *
+								100
+							).toFixed(1);
+							genderContainer.innerHTML += `<div style="margin-bottom:5px;">${gender}: <strong>${count}</strong> (${percentage}%)</div>`;
+						}
+					);
+
+					// Update purpose stats (top 5)
+					const purposeContainer =
+						document.getElementById("purposeStats");
+					purposeContainer.innerHTML = "";
+					const topPurposes = Object.entries(stats.purposeStats)
+						.sort((a, b) => b[1] - a[1])
+						.slice(0, 5);
+					topPurposes.forEach(([purpose, count]) => {
+						const percentage = (
+							(count / stats.totalVisitors) *
+							100
+						).toFixed(1);
+						purposeContainer.innerHTML += `<div style="margin-bottom:5px;">${purpose}: <strong>${count}</strong> (${percentage}%)</div>`;
+					});
+
+					// Update recent visitors
+					const recentContainer =
+						document.getElementById("recentVisitors");
+					recentContainer.innerHTML = "";
+					stats.recentVisitors.forEach((visitor, index) => {
+						const date = new Date(visitor.timestamp).toLocaleString(
+							"en-PH",
+							{
+								month: "short",
+								day: "numeric",
+								hour: "2-digit",
+								minute: "2-digit",
+							}
+						);
+						recentContainer.innerHTML += `
+							<div style="padding:8px;margin-bottom:5px;background:white;border-radius:4px;border-left:3px solid #059669;">
+								<strong>${visitor.fullname}</strong> (${visitor.gender}, ${visitor.age})
+								<div style="font-size:11px;color:#64748b;">${date} • ${visitor.purpose}</div>
+							</div>
+						`;
+					});
+
+					showToastSuccess("Dashboard updated!");
+				} else {
+					showToastError(`Failed to load dashboard: ${result.error}`);
+				}
+			} catch (error) {
+				console.error("Error loading dashboard:", error);
+				showToastError("Error loading dashboard data.");
+			}
+		}
+
+		async function exportAllData() {
+			try {
+				showToastSuccess("Exporting complete database... Please wait.");
+				const result = await window.electronAPI.exportData();
+
+				if (result.success) {
+					showToastSuccess(
+						`✅ Database export completed!\n\n📄 ${
+							result.recordCount
+						} records exported\n💾 Saved to Documents folder\n\nFile: ${
+							result.message.split(": ")[1]
+						}`
+					);
+				} else {
+					showToastError(`❌ Export failed: ${result.error}`);
+				}
+			} catch (error) {
+				console.error("Error exporting data:", error);
+				showToastError("❌ Error exporting data. Please try again.");
+			}
+		}
+
 		async function generateReport(
 			reportType,
 			startDate = null,
 			endDate = null
 		) {
 			try {
-				showToastSuccess("Generating report...");
+				// Show loading toast with report type info
+				const reportTypeNames = {
+					today: "Today's Report",
+					"1week": "Weekly Report",
+					"1month": "Monthly Report",
+					"3months": "Quarterly Report",
+					"6months": "Semi-Annual Report",
+					"1year": "Annual Report",
+					custom: "Custom Range Report",
+				};
+
+				showToastSuccess(
+					`Generating ${
+						reportTypeNames[reportType] || "Report"
+					}... Please wait.`
+				);
+
 				const result = await window.electronAPI.generateReport(
 					reportType,
 					startDate,
@@ -1365,19 +1629,26 @@ export const HomeView = {
 				);
 
 				if (result.success) {
+					// Show detailed success message with statistics
+					const statsMsg = result.statistics
+						? `\n\n📊 Quick Stats:\n• Total Visitors: ${result.recordCount}\n• Daily Average: ${result.statistics.dailyAverage}\n• Peak Day: ${result.statistics.peakDayVisits} visitors\n• Peak Hour: ${result.statistics.peakHourVisits} visitors at ${result.statistics.peakHour}`
+						: `\n\n📊 Total Records: ${result.recordCount}`;
+
 					showToastSuccess(
-						`Report generated successfully! ${result.recordCount} records found. File saved to Documents folder.`
+						`✅ ${
+							reportTypeNames[reportType] || "Report"
+						} generated successfully!${statsMsg}\n\n💾 Saved to Documents folder`
 					);
 					hideReportOptionsModal();
 					hideCustomDateModal();
 				} else {
 					showToastError(
-						`Failed to generate report: ${result.error}`
+						`❌ Failed to generate report: ${result.error}`
 					);
 				}
 			} catch (error) {
 				console.error("Error generating report:", error);
-				showToastError("Error generating report. Please try again.");
+				showToastError("❌ Error generating report. Please try again.");
 			}
 		}
 
@@ -1416,11 +1687,37 @@ export const HomeView = {
 			);
 		}
 
+		// Dashboard modal handlers
+		if (dashboardStats) {
+			dashboardStats.addEventListener("click", function () {
+				hideReportOptionsModal();
+				showDashboardModal();
+			});
+		}
+		if (closeDashboardModal) {
+			closeDashboardModal.addEventListener("click", hideDashboardModal);
+		}
+		if (refreshDashboard) {
+			refreshDashboard.addEventListener("click", loadDashboardStats);
+		}
+		if (exportData) {
+			exportData.addEventListener("click", exportAllData);
+		}
+
 		// Report option handlers
+		const reportToday = document.getElementById("reportToday");
 		const report1Week = document.getElementById("report1Week");
 		const report1Month = document.getElementById("report1Month");
+		const report3Months = document.getElementById("report3Months");
+		const report6Months = document.getElementById("report6Months");
+		const report1Year = document.getElementById("report1Year");
 		const reportCustom = document.getElementById("reportCustom");
 
+		if (reportToday) {
+			reportToday.addEventListener("click", function () {
+				generateReport("today");
+			});
+		}
 		if (report1Week) {
 			report1Week.addEventListener("click", function () {
 				generateReport("1week");
@@ -1429,6 +1726,21 @@ export const HomeView = {
 		if (report1Month) {
 			report1Month.addEventListener("click", function () {
 				generateReport("1month");
+			});
+		}
+		if (report3Months) {
+			report3Months.addEventListener("click", function () {
+				generateReport("3months");
+			});
+		}
+		if (report6Months) {
+			report6Months.addEventListener("click", function () {
+				generateReport("6months");
+			});
+		}
+		if (report1Year) {
+			report1Year.addEventListener("click", function () {
+				generateReport("1year");
 			});
 		}
 		if (reportCustom) {
@@ -1480,8 +1792,15 @@ export const HomeView = {
 				}
 			});
 		}
+		if (dashboardModal) {
+			dashboardModal.addEventListener("keydown", function (e) {
+				if (e.key === "Escape") {
+					hideDashboardModal();
+				}
+			});
+		}
 
-		// Global shortcut: Ctrl+Shift+B
+		// Global shortcut: Ctrl+Shift+B for admin access
 		window.addEventListener("keydown", function (e) {
 			if (e.ctrlKey && e.shiftKey && (e.key === "B" || e.key === "b")) {
 				e.preventDefault();
